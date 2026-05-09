@@ -8,6 +8,7 @@ import com.tianji.aigc.config.ToolResultHolder;
 import com.tianji.aigc.constants.Constant;
 import com.tianji.aigc.enums.ChatEventTypeEnum;
 import com.tianji.aigc.service.ChatService;
+import com.tianji.aigc.service.ChatSessionService;
 import com.tianji.aigc.vo.ChatEventVO;
 import com.tianji.common.utils.DateUtils;
 import com.tianji.common.utils.UserContext;
@@ -19,15 +20,20 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
 
+/**
+ * 增强型智能体实现
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "tj.ai", name = "chat-type", havingValue = "ENHANCE")
 public class ChatServiceImpl implements ChatService {
 
     private final ChatClient chatClient;
@@ -44,6 +50,8 @@ public class ChatServiceImpl implements ChatService {
     private static final ChatEventVO STOP_EVENT = ChatEventVO.builder().eventType(ChatEventTypeEnum.STOP.getValue()).build();
 
     private final VectorStore vectorStore;
+
+    private final ChatSessionService chatSessionService;
 
     @Override
     public Flux<ChatEventVO> chat(String question, String sessionId) {
@@ -63,6 +71,9 @@ public class ChatServiceImpl implements ChatService {
                         .topK(6) // 返回的向量数量
                         .build())
                 .build();
+
+        // 更新会话标题或更新时间
+        chatSessionService.update(sessionId, question, userId);
 
         return this.chatClient.prompt()
                 .system(promptSystem -> promptSystem
