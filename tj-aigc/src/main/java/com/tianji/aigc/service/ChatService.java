@@ -31,4 +31,12 @@ public interface ChatService {
      * @param sessionId 会话id
      */
     void stop(String sessionId);
+
+    /**
+     * 文本对话
+     *
+     * @param question 问题
+     * @return 回答内容
+     */
+    String chatText(String question);
 }

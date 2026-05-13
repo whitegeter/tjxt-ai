@@ -86,4 +86,9 @@ public class AppAgentChatService implements ChatService {
         // 移除标记
         GENERATE_STATUS.remove(sessionId);
     }
+
+    @Override
+    public String chatText(String question) {
+        return "";
+    }
 }

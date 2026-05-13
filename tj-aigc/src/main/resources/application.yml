@@ -44,7 +44,9 @@ tj:
           data-id: consult-agent-system-message.txt
         knowledge-agent:
           data-id: knowledge-agent-system-message.txt
+        text:
+          data-id: text-system-chat-message.txt
     memory:
       max: 100
       type: Redis
-    chat-type: ROUTE # ROUTE / ENHANCE / APP
+    chat-type: ENHANCE # ROUTE / ENHANCE / APP

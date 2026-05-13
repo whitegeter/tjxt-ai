@@ -3,6 +3,7 @@ package com.tianji.aigc.controller;
 import com.tianji.aigc.dto.ChatDTO;
 import com.tianji.aigc.service.ChatService;
 import com.tianji.aigc.vo.ChatEventVO;
+import com.tianji.aigc.vo.TemplateVO;
 import com.tianji.common.annotations.NoWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ public class ChatController {
 
     private final ChatService chatService;
 
+    private static final TemplateVO TEMPLATE_VO = new TemplateVO();
+
     @NoWrapper
     @PostMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ChatEventVO> chat(@RequestBody ChatDTO chatDTO) {
@@ -29,4 +32,14 @@ public class ChatController {
         this.chatService.stop(sessionId);
     }
 
+    @NoWrapper
+    @PostMapping(value = "/text", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public String chatText(@RequestBody String question) {
+        return this.chatService.chatText(question);
+    }
+
+    @GetMapping("/templates")
+    public TemplateVO getTemplates() {
+        return TEMPLATE_VO;
+    }
 }

@@ -38,6 +38,8 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatClient chatClient;
 
+    private final ChatClient openAiChatClient;
+
     private final SystemPromptConfig systemPromptConfig;
 
     private final StringRedisTemplate redisTemplate;
@@ -141,5 +143,14 @@ public class ChatServiceImpl implements ChatService {
     public void stop(String sessionId) {
         var hashOps = redisTemplate.boundHashOps(GENERATE_STATUS_KEY);
         hashOps.delete(sessionId);
+    }
+
+    @Override
+    public String chatText(String question) {
+        return this.openAiChatClient.prompt()
+                .system(this.systemPromptConfig.getTextSystemMessage().get())
+                .user(question)
+                .call()
+                .content();
     }
 }
