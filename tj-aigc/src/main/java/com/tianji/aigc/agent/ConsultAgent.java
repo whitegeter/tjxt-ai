@@ -34,7 +34,7 @@ public class ConsultAgent extends AbstractAgent{
 
     @Override
     public String systemMessage() {
-        return systemPromptConfig.getBuyAgentSystemMessage().get();
+        return systemPromptConfig.getConsultAgentSystemMessage().get();
     }
 
     @Override
